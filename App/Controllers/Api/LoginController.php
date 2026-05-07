@@ -5,6 +5,7 @@ namespace App\Controllers\Api;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key; // Importante para as versões novas do Firebase JWT
 
+
 class LoginController
 {
 
@@ -22,10 +23,13 @@ class LoginController
 
         if ($user) {
             // 3. Se deu certo, gera o Token
-            $key = "8zP>9aL$2h!Wq@5mN*7vX&3pZ#1kR9tY";
+
+            // $key = "8zP>9aL$2h!Wq@5mN*7vX&3pZ#1kR9tY";
+            $key = $_ENV['JWT_TOKEN'];
+
             $payload = [
                 'iat' => time(),            // Horário que foi criado
-                'exp' => time() + 3600,     // Expira em 1 hora
+                'exp' => time() + $_ENV['JWT_TIME'],     // Expira em 1 hora
                 'uid' => $user->id          // ID do usuário
             ];
 

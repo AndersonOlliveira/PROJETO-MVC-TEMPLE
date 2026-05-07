@@ -1,5 +1,7 @@
  $(document).ready(function () {
      $('#formLogin').submit(function (e) {
+
+         localStorage.clear();
          e.preventDefault(); // Impede a página de recarregar
 
          const dados = $(this).serialize();
@@ -13,6 +15,9 @@
                  console.warn(response);
                  if (response.success) {
                      $('#mensagem').html('<p style="color:green">' + response.message + '</p>');
+
+                     console.table(localStorage)
+
                      localStorage.setItem('meu_token', response.token);
                      // Redirecionar após 2 segundos
                      setTimeout(() => {

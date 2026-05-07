@@ -10,7 +10,8 @@ class Auth
 {
     public static function check()
     {
-        $key = "8zP>9aL$2h!Wq@5mN*7vX&3pZ#1kR9tY"; // Use a mesma chave sempre!
+        // $key = "8zP>9aL$2h!Wq@5mN*7vX&3pZ#1kR9tY";
+        $key = $_ENV['JWT_TOKEN'];
         $token = null;
 
         // 1. Tenta pegar o token do Cookie (útil para navegação/redirecionamento)
@@ -41,6 +42,8 @@ class Auth
         // Se for uma requisição de API (AJAX), retorna JSON.
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
             header('Content-Type: application/json');
+            header('Location: /login');
+
             echo json_encode(['success' => false, 'error' => 'Não autorizado']);
         } else {
             header('Location: /login');

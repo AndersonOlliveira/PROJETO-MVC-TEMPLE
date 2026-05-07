@@ -2,6 +2,9 @@
 // 1. Carrega o autoload do Composer (APENAS UMA VEZ)
 require_once __DIR__ . '/../vendor/autoload.php';
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
 use App\Helpers\Auth; // para controller de login e criacao de token de entrada 
 
 
@@ -14,7 +17,7 @@ $router->get('/', function () {
 });
 
 $router->get('/login', function () {
-    require_once '../app/Views/login.php';
+    require_once '../app/Views/home.php';
 });
 $router->get('/home', function () {
     Auth::check();
