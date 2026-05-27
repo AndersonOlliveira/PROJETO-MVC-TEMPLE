@@ -18,7 +18,7 @@
 
                      console.table(localStorage)
 
-                     localStorage.setItem('meu_token', response.token);
+                     sessionStorage.setItem('meu_token', response.token);
                      // Redirecionar após 2 segundos
                      setTimeout(() => {
                          window.location.href = '/home';
@@ -27,8 +27,13 @@
                      $('#mensagem').html('<p style="color:red">' + response.error + '</p>');
                  }
              },
-             error: function () {
-                 alert('Erro ao conectar com a API. Verifique o console.');
+             error: function (e) {
+                 console.warn(e);
+                 if (e.responseJSON && e.responseJSON.error) {
+                     $('#mensagem').html('<p style="color:red">' + e.responseJSON.error + '</p>');
+                 } else {
+                     alert('Erro crítico ao conectar com a API.');
+                 }
              }
          });
      });

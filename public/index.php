@@ -24,6 +24,11 @@ $router->get('/home', function () {
     require_once '../app/Views/painel/index.php';
 });
 
+$router->get('/auth/api', function () {
+    Auth::check();
+    require_once '../app/Views/painel/index.php';
+});
+
 
 $router->before('GET|POST', '/api/auth/.*', function () {
     if (session_status() === PHP_SESSION_NONE) session_start();

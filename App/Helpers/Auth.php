@@ -10,44 +10,75 @@ class Auth
 {
     public static function check()
     {
-        // $key = "8zP>9aL$2h!Wq@5mN*7vX&3pZ#1kR9tY";
         $key = $_ENV['JWT_TOKEN'];
-        $token = null;
+        $token = null; # INICIAL COMO NULL
 
-        // 1. Tenta pegar o token do Cookie (útil para navegação/redirecionamento)
+        // 1. Identifica se a requisição quer JSON (Postman, AJAX, APIs)
+        $headers = getallheaders();
+        $acceptHeader = $headers['Accept'] ?? $headers['accept'] ?? '';
+        $isJsonRequest = str_contains($acceptHeader, 'application/json') ||
+            isset($_SERVER['HTTP_X_REQUESTED_WITH']);
+
+        // 2. Procura o token no Cookie (Navegador)
         if (isset($_COOKIE['jwt_token'])) {
             $token = $_COOKIE['jwt_token'];
         }
-
-        // 2. Se não tem cookie, tenta pegar do cabeçalho Authorization (útil para chamadas AJAX de API)
+        // 3. Se não tem cookie, procura no Header Authorization (Postman / AJAX)
         else {
-            $headers = getallheaders();
             $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
+
+
             if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
                 $token = $matches[1];
             }
         }
 
-        // 3. Se encontrou um token em algum lugar, tenta validar
+        // 4. Validação do Token
         if ($token) {
+
             try {
-                return JWT::decode($token, new Key($key, 'HS256'));
+
+                $decoded = JWT::decode($token, new Key($key, 'HS256'));
+
+                // Se a API pediu JSON (Postman ou AJAX), devolve a resposta estruturada
+                if ($isJsonRequest) {
+                    header('Content-Type: application/json');
+                    http_response_code(200);
+                    echo json_encode([
+                        'success' => true,
+                        'msg'     => 'Autorizado',
+                        'user'    => $decoded
+                    ]);
+                    exit;
+                }
+                if (!isset($decoded->exp) || time() >= $decoded->exp) {
+                    throw new Exception("Este token não possui data de expiração ou já expirou.");
+                }
+                // Se for navegação normal no browser, apenas retorna os dados e abre a página
+                return $decoded;
             } catch (Exception $e) {
-                // Token inválido ou expirado - segue para o erro abaixo
+                $errorMsg = 'Token inválido ou expirado: ' . $e->getMessage();
             }
-        }
-
-        // 4. Se chegou aqui, não há token válido. 
-        // Se for uma requisição de página (não AJAX), redireciona.
-        // Se for uma requisição de API (AJAX), retorna JSON.
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-            header('Content-Type: application/json');
-            header('Location: /login');
-
-            echo json_encode(['success' => false, 'error' => 'Não autorizado']);
         } else {
-            header('Location: /login');
+            $errorMsg = 'Token não fornecido no Cookie ou Authorization Header.';
         }
-        exit;
+        // 5. Tratamento de Erro (Não Autorizado)
+        // Resposta false
+        if (!$isJsonRequest) {
+            // Resposta para Postman, Mobile ou AJAX do Navegador
+            header('Content-Type: application/json');
+            http_response_code(401);
+            echo json_encode([
+                'success' => false,
+                'error'   => 'Não autorizado',
+                'msg'     => $errorMsg
+            ]);
+            exit;
+        } else {
+            // Resposta para o utilizador comum a navegar no Browser
+            setcookie('jwt_token', '', time() - $_ENV['JWT_TIME'], '/'); // Limpa cookie inválido
+            header('Location: /login');
+            exit;
+        }
     }
 }

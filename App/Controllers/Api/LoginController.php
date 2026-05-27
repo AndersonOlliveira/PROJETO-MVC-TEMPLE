@@ -19,18 +19,16 @@ class LoginController
 
         // 2. Valida no seu Model (Simulação)
         // $user = $this->model->findUser($email, $senha);
-        $user = ($email === 'admin@teste.com' && $senha === '123') ? (object)['id' => 1] : null;
+        $user = ($email === 'admin@teste.com' && $senha === '123') ? (object)['id' => 1, 'email' => $email] : null;
 
         if ($user) {
             // 3. Se deu certo, gera o Token
-
-            // $key = "8zP>9aL$2h!Wq@5mN*7vX&3pZ#1kR9tY";
             $key = $_ENV['JWT_TOKEN'];
 
             $payload = [
-                'iat' => time(),            // Horário que foi criado
+                'iat' => time(),             // Horário que foi criado
                 'exp' => time() + $_ENV['JWT_TIME'],     // Expira em 1 hora
-                'uid' => $user->id          // ID do usuário
+                'uid' => $user->email          // ID do usuário
             ];
 
             $token = JWT::encode($payload, $key, 'HS256');
@@ -38,9 +36,10 @@ class LoginController
             // echo '<pre>';
 
             // print_r($token);
-
+            /// SALVO NO COOKIE
+            $tempoValidade = 10;
             setcookie('jwt_token', $token, [
-                'expires' => time() + 3600,
+                'expires' => time() + $tempoValidade,
                 'path' => '/',
                 'httponly' => true, // Segurança contra ataques XSS
                 'samesite' => 'Lax'
