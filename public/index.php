@@ -54,5 +54,11 @@ $router->post('/home', function () {
 
 });
 
+
+$router->get('/api/listaMobilidade', function () {
+    $controller = new \App\Controllers\Api\ApiHomeController();
+    $controller->testeConection();
+});
+
 // 4. Executa o roteador
 $router->run();

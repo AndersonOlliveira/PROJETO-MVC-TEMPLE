@@ -13,6 +13,7 @@ return array(
     'GrahamCampbell\\ResultType\\' => array($vendorDir . '/graham-campbell/result-type/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
+    'Core\\' => array($baseDir . '/Core'),
     'App\\' => array($baseDir . '/App'),
     'Andersonoliveira\\ProjetoMvvTemplete\\' => array($baseDir . '/src'),
 );

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'andersonoliveira/projeto-mvv-templete',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-templet',
+        'version' => 'dev-templet',
+        'reference' => '6ec12f78510e934d9056992f27bb6f80e2160929',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'andersonoliveira/projeto-mvv-templete' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-templet',
+            'version' => 'dev-templet',
+            'reference' => '6ec12f78510e934d9056992f27bb6f80e2160929',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
