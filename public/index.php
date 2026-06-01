@@ -6,7 +6,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 use App\Helpers\Auth; // para controller de login e criacao de token de entrada 
-
+use Core\Controller;
 
 // 2. Instancia o Roteador
 $router = new \Bramus\Router\Router();
@@ -30,14 +30,21 @@ $router->get('/auth/api', function () {
 });
 
 
-$router->before('GET|POST', '/api/auth/.*', function () {
-    if (session_status() === PHP_SESSION_NONE) session_start();
+// $router->before('GET|POST', '/api/auth/.*', function () {
+//     if (session_status() === PHP_SESSION_NONE) session_start();
 
-    if (!isset($_SESSION['usuario_id'])) {
-        header('Location: /login');
-        exit;
-    }
+//     if (!isset($_SESSION['usuario_id'])) {
+//         header('Location: /login');
+//         exit;
+//     }
+// });
+
+$router->before('OPTIONS', '/api/.*', function () {
+    Controller::handleCorsPreflight();
+    http_response_code(204);
+    exit();
 });
+
 
 $router->post('/api/auth', function () {
     header('Content-Type: application/json');
@@ -58,6 +65,17 @@ $router->post('/home', function () {
 $router->get('/api/listaMobilidade', function () {
     $controller = new \App\Controllers\Api\ApiHomeController();
     $controller->testeConection();
+});
+
+//TRAZER OS PLANOS PARA O FRONTEND
+$router->get('/api/listPlanos', function () {
+    $controller = new \App\Controllers\Api\ApiHomeController();
+    $controller->listaPlanos();
+});
+// ROTA PARA CADASTRO DE ALUNOS
+$router->post('/api/cadAlunosUsers', function () {
+    $controller = new \App\Controllers\Api\ApiHomeController();
+    $controller->cadAlunosUsers();
 });
 
 // 4. Executa o roteador
