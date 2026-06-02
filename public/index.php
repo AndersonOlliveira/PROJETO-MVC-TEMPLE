@@ -72,6 +72,12 @@ $router->get('/api/listPlanos', function () {
     $controller = new \App\Controllers\Api\ApiHomeController();
     $controller->listaPlanos();
 });
+
+//VERRIFICAR SE JÁ EXISTE
+$router->get('/api/bycpf', function () {
+    $controller = new \App\Controllers\Api\ApiHomeController();
+    $controller->getCpf($_REQUEST);
+});
 // ROTA PARA CADASTRO DE ALUNOS
 $router->post('/api/cadAlunosUsers', function () {
     $controller = new \App\Controllers\Api\ApiHomeController();
