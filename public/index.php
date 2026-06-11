@@ -84,5 +84,11 @@ $router->post('/api/cadAlunosUsers', function () {
     $controller->cadAlunosUsers();
 });
 
+// ROTA PARA LISTAR OS DADOS DE PAGAMENTOS
+$router->get('/api/listPgamentos', function () {
+    $controller = new \App\Controllers\Api\ApiHomeController();
+    $controller->listPg();
+});
+
 // 4. Executa o roteador
 $router->run();

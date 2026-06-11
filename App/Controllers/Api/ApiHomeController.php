@@ -5,6 +5,7 @@ namespace App\Controllers\Api;
 
 
 use App\Models\Mobilidades;
+use App\Models\Pagamento;
 use App\Models\Planos;
 use App\Models\PushDados;
 use Core\Controller;
@@ -88,7 +89,7 @@ class ApiHomeController extends Controller
                 'status' => 'false',
                 'data' => $retorno,
                 'mensagem' => 'CPF ESTA COM O FORMATO INVALIDO'
-            ], 422);
+            ], 400);
 
             exit;
         }
@@ -103,9 +104,23 @@ class ApiHomeController extends Controller
                 'status' => 'false',
                 'data' => $retornoVerify,
                 'mensagem' => 'CPF JÁ CADASTRADO NA BASE'
-            ], 422);
+            ], 409);
 
             exit;
         }
+    }
+
+    public function listPg()
+    {
+        $listTipoPag = new Pagamento();
+        $dados = $listTipoPag->listPag();
+
+        header('Content-Type: application/json');
+        $this->json([
+            'status' => 'success',
+            'data' => $dados
+        ], 200);
+
+        exit;
     }
 }
