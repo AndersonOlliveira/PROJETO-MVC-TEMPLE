@@ -33,6 +33,7 @@ class ApiHomeController extends Controller
         header('Content-Type: application/json');
         $this->json([
             'status' => 'success',
+            'retorno' => 'teste',
             'data' => $dados
         ]);
 
